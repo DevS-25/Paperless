@@ -5,4 +5,5 @@ target/
 .DS_Store
 uploads/
 *.log
-
+.env
+backup.sql
