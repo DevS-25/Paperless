@@ -1,0 +1,145 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--bg-body);
+}
+
+.login-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  max-width: 450px;
+  width: 100%;
+  overflow: hidden;
+  animation: slideUp 0.5s ease;
+  border: 1px solid var(--border-color);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: white;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.login-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.login-header p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.login-body {
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.login-body h2 {
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.login-subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+.google-login-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.login-footer {
+  background: var(--bg-body);
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+}
+
+.login-footer p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0.25rem 0;
+}
+
+.admin-panel-btn {
+  margin-top: 1rem;
+  padding: 0.625rem 1.25rem;
+  background: linear-gradient(135deg, var(--accent-color) 0%, #16213e 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-panel-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.95;
+}
+
+@media (max-width: 480px) {
+  margin-top: 1rem;
+  padding: 0.625rem 1.25rem;
+  background: linear-gradient(135deg, var(--accent-color) 0%, #16213e 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-panel-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.95;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    border-radius: var(--radius-lg);
+  }
+
+  .login-header h1 {
+    font-size: 2rem;
+  }
+
+  .login-body {
+    padding: 2rem 1.5rem;
+  }
+}
