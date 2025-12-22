@@ -39,9 +39,8 @@ public class UserController {
             }
 
             User user = userDetailsService.loadUserEntityByEmail(userDetails.getUsername());
-            String filename = fileStorageService.storeFile(file);
 
-            User updatedUser = userService.updateSignature(user, filename, role);
+            User updatedUser = userService.updateSignature(user, file.getBytes(), role);
             return ResponseEntity.ok(UserDTO.fromEntity(updatedUser));
         } catch (Exception e) {
             e.printStackTrace();

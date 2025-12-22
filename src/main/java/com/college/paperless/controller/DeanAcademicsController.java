@@ -126,8 +126,11 @@ public class DeanAcademicsController {
             throw new RuntimeException("Access denied");
         }
 
-        Path filePath = fileStorageService.getFilePath(document.getFilePath());
-        Resource resource = new UrlResource(filePath.toUri());
+        if (document.getData() == null) {
+             throw new RuntimeException("Document content not found");
+        }
+
+        org.springframework.core.io.ByteArrayResource resource = new org.springframework.core.io.ByteArrayResource(document.getData());
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(document.getFileType()))

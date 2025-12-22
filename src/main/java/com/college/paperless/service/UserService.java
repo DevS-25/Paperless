@@ -86,18 +86,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @Transactional
-    public User updateSignature(User user, String signaturePath) {
-        user.setSignaturePath(signaturePath);
-        return userRepository.save(user);
-    }
+
 
     @Transactional
-    public User updateSignature(User user, String signaturePath, String role) {
+    public User updateSignature(User user, byte[] signatureData, String role) {
         if ("HOD".equalsIgnoreCase(role)) {
-            user.setHodSignaturePath(signaturePath);
+            user.setHodSignatureData(signatureData);
+            user.setHodSignaturePath("DB_STORED"); // Placeholder
         } else {
-            user.setSignaturePath(signaturePath);
+            user.setSignatureData(signatureData);
+            user.setSignaturePath("DB_STORED"); // Placeholder
         }
         return userRepository.save(user);
     }

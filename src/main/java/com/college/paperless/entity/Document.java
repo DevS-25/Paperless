@@ -33,6 +33,10 @@ public class Document {
     @Column(length = 1000)
     private String description;
 
+    @Lob
+    @Column(name = "data", columnDefinition = "LONGBLOB")
+    private byte[] data;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
     private User student;

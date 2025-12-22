@@ -1,5 +1,6 @@
 package com.college.paperless.service;
 
+import com.college.paperless.entity.Document;
 import com.college.paperless.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -10,9 +11,9 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.stereotype.Service;
 
 import java.awt.Color;
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,32 +21,26 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class PdfService {
 
-    private final FileStorageService fileStorageService;
-
-    public void addDigitalSignToPdf(String filePath, User approver, String role) {
+    public void addDigitalSignToPdf(Document document, User approver, String role) {
         try {
-            Path path = fileStorageService.getFilePath(filePath);
-            File file = path.toFile();
-
-            if (!file.exists()) {
-                throw new RuntimeException("File not found: " + filePath);
+            if (document.getData() == null) {
+                throw new RuntimeException("Document data is empty");
             }
 
             // Only process PDF files
-            if (!filePath.toLowerCase().endsWith(".pdf")) {
+            if (!"application/pdf".equalsIgnoreCase(document.getFileType()) && !document.getFileName().toLowerCase().endsWith(".pdf")) {
                 return;
             }
 
-            // Create temp file
-            File tempFile = File.createTempFile("paperless_sign_", ".pdf", file.getParentFile());
+            try (PDDocument pdDocument = PDDocument.load(new ByteArrayInputStream(document.getData()));
+                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 
-            try (PDDocument document = PDDocument.load(file)) {
                 // Get the first page
-                PDPage page = document.getPage(0);
+                PDPage page = pdDocument.getPage(0);
 
                 // Create a content stream to write to the page (Append mode)
                 try (PDPageContentStream contentStream = new PDPageContentStream(
-                        document, page, PDPageContentStream.AppendMode.APPEND, true, true)) {
+                        pdDocument, page, PDPageContentStream.AppendMode.APPEND, true, true)) {
 
                     // Define position (Bottom Right)
                     float pageWidth = page.getMediaBox().getWidth();
@@ -54,41 +49,28 @@ public class PdfService {
                     float y = 50; // Bottom margin
 
                     // Check if user has a signature image
-                    String signaturePathToUse = approver.getSignaturePath();
-                    if ("HOD".equalsIgnoreCase(role) && approver.getHodSignaturePath() != null && !approver.getHodSignaturePath().isEmpty()) {
-                        signaturePathToUse = approver.getHodSignaturePath();
+                    byte[] signatureData = approver.getSignatureData();
+                    if ("HOD".equalsIgnoreCase(role) && approver.getHodSignatureData() != null && approver.getHodSignatureData().length > 0) {
+                        signatureData = approver.getHodSignatureData();
                     }
 
-                    if (signaturePathToUse != null && !signaturePathToUse.isEmpty()) {
+                    if (signatureData != null && signatureData.length > 0) {
                         try {
-                            Path signaturePath = fileStorageService.getFilePath(signaturePathToUse);
-                            File signatureFile = signaturePath.toFile();
+                            PDImageXObject pdImage = PDImageXObject.createFromByteArray(pdDocument, signatureData, "signature");
 
-                            System.out.println("Attempting to add signature from: " + signatureFile.getAbsolutePath());
+                            // Fixed square size
+                            float size = 125;
+                            contentStream.drawImage(pdImage, x, y, size, size);
 
-                            if (signatureFile.exists()) {
-                                PDImageXObject pdImage = PDImageXObject.createFromFile(signatureFile.getAbsolutePath(), document);
-                                System.out.println("Applying signature: " + signatureFile.getName() + " Original: " + pdImage.getWidth() + "x" + pdImage.getHeight());
-
-                                // Fixed square size
-                                float size = 125;
-                                contentStream.drawImage(pdImage, x, y, size, size);
-
-
-                                // Add text below image
-                                contentStream.beginText();
-                                contentStream.setFont(PDType1Font.HELVETICA, 8);
-                                contentStream.setNonStrokingColor(Color.BLACK);
-                                contentStream.newLineAtOffset(x, y - 10);
-                                contentStream.showText("Digitally Signed by " + approver.getName() + " (" + role + ")");
-                                contentStream.newLineAtOffset(0, -10);
-                                contentStream.showText("Date: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
-                                contentStream.endText();
-                            } else {
-                                System.out.println("Signature file does not exist: " + signatureFile.getAbsolutePath());
-                                // Fallback to text box if file missing
-                                drawTextBox(contentStream, x, y, approver.getName(), role);
-                            }
+                            // Add text below image
+                            contentStream.beginText();
+                            contentStream.setFont(PDType1Font.HELVETICA, 8);
+                            contentStream.setNonStrokingColor(Color.BLACK);
+                            contentStream.newLineAtOffset(x, y - 10);
+                            contentStream.showText("Digitally Signed by " + approver.getName() + " (" + role + ")");
+                            contentStream.newLineAtOffset(0, -10);
+                            contentStream.showText("Date: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+                            contentStream.endText();
                         } catch (Exception e) {
                             System.out.println("Error adding signature image: " + e.getMessage());
                             e.printStackTrace();
@@ -96,18 +78,18 @@ public class PdfService {
                             drawTextBox(contentStream, x, y, approver.getName(), role);
                         }
                     } else {
-                        System.out.println("No signature path found for user: " + approver.getName());
+                        System.out.println("No signature data found for user: " + approver.getName());
                         // Draw text box
                         drawTextBox(contentStream, x, y, approver.getName(), role);
                     }
                 }
 
-                // Save to temp file
-                document.save(tempFile);
-            }
+                // Save to output stream
+                pdDocument.save(outputStream);
 
-            // Replace original file with temp file
-            java.nio.file.Files.move(tempFile.toPath(), file.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                // Update document data
+                document.setData(outputStream.toByteArray());
+            }
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to sign document", e);

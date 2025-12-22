@@ -89,6 +89,14 @@ public class User {
     @Column(name = "hod_signature_path")
     private String hodSignaturePath;
 
+    @Lob
+    @Column(name = "signature_data", columnDefinition = "LONGBLOB")
+    private byte[] signatureData;
+
+    @Lob
+    @Column(name = "hod_signature_data", columnDefinition = "LONGBLOB")
+    private byte[] hodSignatureData;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

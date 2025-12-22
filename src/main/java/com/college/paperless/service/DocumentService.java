@@ -23,16 +23,16 @@ public class DocumentService {
 
     @Transactional
     public Document uploadDocument(MultipartFile file, String description, User student) throws IOException {
-        String filename = fileStorageService.storeFile(file);
-
+        // Store file in DB
         Document document = new Document();
         document.setFileName(file.getOriginalFilename());
-        document.setFilePath(filename);
+        document.setFilePath("DB_STORED"); // Placeholder or keep original filename
         document.setFileType(file.getContentType());
         document.setFileSize(file.getSize());
         document.setDescription(description);
         document.setStudent(student);
         document.setStatus(Document.DocumentStatus.DRAFT);
+        document.setData(file.getBytes());
 
         return documentRepository.save(document);
     }
@@ -63,7 +63,7 @@ public class DocumentService {
         }
 
         // Add digital signature
-        pdfService.addDigitalSignToPdf(document.getFilePath(), mentor, "MENTOR");
+        pdfService.addDigitalSignToPdf(document, mentor, "MENTOR");
 
         document.setStatus(Document.DocumentStatus.APPROVED_BY_MENTOR);
         document.setMentorActionAt(LocalDateTime.now());
@@ -143,7 +143,7 @@ public class DocumentService {
         }
 
         // Add digital signature
-        pdfService.addDigitalSignToPdf(document.getFilePath(), hod, "HOD");
+        pdfService.addDigitalSignToPdf(document, hod, "HOD");
 
         document.setStatus(Document.DocumentStatus.APPROVED_BY_HOD);
         document.setHodActionAt(LocalDateTime.now());
@@ -201,7 +201,7 @@ public class DocumentService {
         }
 
         // Add digital signature
-        pdfService.addDigitalSignToPdf(document.getFilePath(), dean, "DEAN");
+        pdfService.addDigitalSignToPdf(document, dean, "DEAN");
 
         document.setStatus(Document.DocumentStatus.APPROVED_BY_DEAN);
         document.setDeanActionAt(LocalDateTime.now());
@@ -259,7 +259,7 @@ public class DocumentService {
         }
 
         // Add digital signature
-        pdfService.addDigitalSignToPdf(document.getFilePath(), deanAcademics, "DEAN ACADEMICS");
+        pdfService.addDigitalSignToPdf(document, deanAcademics, "DEAN ACADEMICS");
 
         document.setStatus(Document.DocumentStatus.APPROVED_BY_DEAN_ACADEMICS);
         document.setDeanAcademicsActionAt(LocalDateTime.now());
@@ -317,7 +317,7 @@ public class DocumentService {
         }
 
         // Add digital signature
-        pdfService.addDigitalSignToPdf(document.getFilePath(), registrar, "REGISTRAR");
+        pdfService.addDigitalSignToPdf(document, registrar, "REGISTRAR");
 
         document.setStatus(Document.DocumentStatus.APPROVED_BY_REGISTRAR);
         document.setRegistrarActionAt(LocalDateTime.now());
@@ -375,7 +375,7 @@ public class DocumentService {
         }
 
         // Add digital signature
-        pdfService.addDigitalSignToPdf(document.getFilePath(), coe, "COE");
+        pdfService.addDigitalSignToPdf(document, coe, "COE");
 
         document.setStatus(Document.DocumentStatus.APPROVED_BY_COE);
         // document.setCoeActionAt(LocalDateTime.now()); // Add timestamp if needed
@@ -431,7 +431,7 @@ public class DocumentService {
         }
 
         // Add digital signature
-        pdfService.addDigitalSignToPdf(document.getFilePath(), rnd, "R&D");
+        pdfService.addDigitalSignToPdf(document, rnd, "R&D");
 
         document.setStatus(Document.DocumentStatus.APPROVED_BY_RND);
         return documentRepository.save(document);
@@ -485,7 +485,7 @@ public class DocumentService {
         }
 
         // Add digital signature
-        pdfService.addDigitalSignToPdf(document.getFilePath(), industryRelations, "INDUSTRY RELATIONS");
+        pdfService.addDigitalSignToPdf(document, industryRelations, "INDUSTRY RELATIONS");
 
         document.setStatus(Document.DocumentStatus.APPROVED_BY_INDUSTRY_RELATIONS);
         return documentRepository.save(document);
@@ -615,7 +615,7 @@ public class DocumentService {
         }
 
         // Add digital signature
-        pdfService.addDigitalSignToPdf(document.getFilePath(), examCell, "EXAM CELL");
+        pdfService.addDigitalSignToPdf(document, examCell, "EXAM CELL");
 
         document.setStatus(Document.DocumentStatus.APPROVED_BY_EXAM_CELL);
         return documentRepository.save(document);
