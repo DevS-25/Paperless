@@ -489,6 +489,7 @@ function IndustryRelationDashboard({ user, onLogout }) {
         </div>
       )}
 
+      {/* Document Preview Modal */}
       {isPreviewOpen && (
         <div className="preview-modal-overlay">
           <div className="preview-modal">
