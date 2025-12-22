@@ -28,7 +28,6 @@ public class AuthController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
     private final CustomUserDetailsService userDetailsService;
-    private final FileStorageService fileStorageService;
 
     @PostMapping("/google-login")
     public ResponseEntity<LoginResponse> googleLogin(@RequestBody Map<String, String> request) {

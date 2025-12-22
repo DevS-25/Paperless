@@ -21,7 +21,6 @@ public class UserController {
 
     private final UserService userService;
     private final CustomUserDetailsService userDetailsService;
-    private final FileStorageService fileStorageService;
 
     @PostMapping("/signature")
     public ResponseEntity<?> uploadSignature(

@@ -33,7 +33,6 @@ public class StudentController {
 
     private final DocumentService documentService;
     private final UserService userService;
-    private final FileStorageService fileStorageService;
     private final CustomUserDetailsService userDetailsService;
 
     @PostMapping("/upload")

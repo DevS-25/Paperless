@@ -18,7 +18,6 @@ import java.util.Optional;
 public class DocumentService {
 
     private final DocumentRepository documentRepository;
-    private final FileStorageService fileStorageService;
     private final PdfService pdfService;
 
     @Transactional
@@ -26,7 +25,7 @@ public class DocumentService {
         // Store file in DB
         Document document = new Document();
         document.setFileName(file.getOriginalFilename());
-        document.setFilePath("DB_STORED"); // Placeholder or keep original filename
+        document.setFilePath("DB_STORED"); // Placeholder
         document.setFileType(file.getContentType());
         document.setFileSize(file.getSize());
         document.setDescription(description);
