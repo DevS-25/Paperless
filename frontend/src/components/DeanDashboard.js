@@ -591,6 +591,16 @@ function DeanDashboard({ user, onLogout }) {
         </section>
       </div>
 
+      {/* Global Loading Overlay */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Processing...</p>
+          </div>
+        </div>
+      )}
+
       {/* Document Preview Modal */}
       {isPreviewOpen && (
         <div className="preview-modal-overlay">
@@ -601,7 +611,7 @@ function DeanDashboard({ user, onLogout }) {
                 <button className="preview-close-btn" onClick={handleClosePreview}>×</button>
               </div>
               <div className="preview-body">
-y                {previewLoading ? (
+                {previewLoading ? (
                   <div className="loading-spinner">
                     <div className="spinner"></div>
                     <p>Loading document...</p>

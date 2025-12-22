@@ -54,6 +54,7 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
 
   const loadDocuments = async () => {
     try {
+      setLoading(true);
       console.log('Loading mentor documents for filter:', filter);
       const response = filter === 'pending'
         ? await mentorAPI.getPendingDocuments()
@@ -62,6 +63,8 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
       setDocuments(response.data);
     } catch (err) {
       console.error('Failed to load documents:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -493,6 +496,16 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
             </div>
           )}
         </section>
+
+        {/* Global Loading Overlay */}
+        {loading && (
+          <div className="loading-overlay">
+            <div className="loading-spinner">
+              <div className="spinner"></div>
+              <p>Processing...</p>
+            </div>
+          </div>
+        )}
 
         {/* Document Preview Modal */}
         {isPreviewOpen && (

@@ -423,6 +423,16 @@ function DeanAcademicsDashboard({ user, onLogout }) {
         </section>
       </div>
 
+      {/* Global Loading Overlay */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Processing...</p>
+          </div>
+        </div>
+      )}
+
       {/* Document Preview Modal */}
       {isPreviewOpen && (
         <div className="preview-modal-overlay">

@@ -54,6 +54,7 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
 
   const loadDocuments = async () => {
     try {
+      setLoading(true);
       console.log('Loading HOD documents for filter:', filter);
       const response = filter === 'pending'
         ? await hodAPI.getPendingDocuments()
@@ -63,6 +64,8 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
       setDocuments(response.data);
     } catch (err) {
       console.error('Failed to load documents:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -542,6 +545,16 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
           )}
         </section>
       </div>
+
+      {/* Global Loading Overlay */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Processing...</p>
+          </div>
+        </div>
+      )}
 
       {/* Document Preview Modal */}
       {isPreviewOpen && (

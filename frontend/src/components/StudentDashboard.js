@@ -32,19 +32,25 @@ function StudentDashboard({ user, onLogout }) {
 
   const loadDocuments = async () => {
     try {
+      setLoading(true);
       const response = await studentAPI.getMyDocuments();
       setDocuments(response.data);
     } catch (err) {
       console.error('Failed to load documents:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const loadMentors = async () => {
     try {
+      setLoading(true);
       const response = await studentAPI.getMentors();
       setMentors(response.data);
     } catch (err) {
       console.error('Failed to load mentors:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,12 +102,15 @@ function StudentDashboard({ user, onLogout }) {
       return;
     }
 
+    setLoading(true);
     try {
       await studentAPI.forwardToMentor(documentId, mentorId);
       loadDocuments();
       alert('Document forwarded to mentor successfully!');
     } catch (err) {
       alert('Failed to forward document');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,6 +122,7 @@ function StudentDashboard({ user, onLogout }) {
       return;
     }
 
+    setLoading(true);
     console.log('Attempting to delete document:', documentId);
     console.log('API endpoint will be: /student/document/' + documentId);
 
@@ -126,6 +136,8 @@ function StudentDashboard({ user, onLogout }) {
       const message = error.response?.data?.error || error.message || 'Failed to delete document. Please try again.';
       setError(message);
       setTimeout(() => setError(''), 3000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -377,6 +389,16 @@ function StudentDashboard({ user, onLogout }) {
           {successMessage && <div className="alert alert-success">{successMessage}</div>}
         </section>
       </div>
+
+      {/* Global Loading Overlay */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Processing...</p>
+          </div>
+        </div>
+      )}
 
       {/* Document Preview Modal */}
       {isPreviewOpen && (

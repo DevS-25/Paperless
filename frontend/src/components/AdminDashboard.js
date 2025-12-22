@@ -635,6 +635,16 @@ function AdminDashboard({ onLogout }) {
           </div>
         </div>
       )}
+
+      {/* Global Loading Overlay */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Processing...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

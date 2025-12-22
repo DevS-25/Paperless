@@ -391,6 +391,16 @@ function RnDDashboard({ user, onLogout }) {
         </section>
       </div>
 
+      {/* Global Loading Overlay */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Processing...</p>
+          </div>
+        </div>
+      )}
+
       {isPreviewOpen && (
         <div className="preview-modal-overlay">
           <div className="preview-modal">
