@@ -499,10 +499,9 @@ function IndustryRelationDashboard({ user, onLogout }) {
                 <button className="preview-close-btn" onClick={handleClosePreview}>×</button>
               </div>
               <div className="preview-body">
-                {previewLoading && <div className="preview-loading">Loading document…</div>}
                 {previewError && !previewLoading ? (
                   <div className="preview-error">{previewError}</div>
-                ) : !previewLoading && previewUrl ? (
+                ) : previewUrl ? (
                   previewType.startsWith('image/') ? (
                     <img src={previewUrl} alt={previewName} className="preview-image" />
                   ) : (

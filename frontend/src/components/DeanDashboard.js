@@ -611,12 +611,7 @@ function DeanDashboard({ user, onLogout }) {
                 <button className="preview-close-btn" onClick={handleClosePreview}>×</button>
               </div>
               <div className="preview-body">
-                {previewLoading ? (
-                  <div className="loading-spinner">
-                    <div className="spinner"></div>
-                    <p>Loading document...</p>
-                  </div>
-                ) : previewError ? (
+                {previewError ? (
                   <div className="preview-error">{previewError}</div>
                 ) : previewUrl ? (
                   previewType.startsWith('image/') ? (
