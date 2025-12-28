@@ -25,8 +25,11 @@ function CoEDashboard({ user, onLogout }) {
 
   useEffect(() => {
     loadDocuments();
-    loadStats();
   }, [filter]);
+
+  useEffect(() => {
+    loadStats();
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -45,7 +48,7 @@ function CoEDashboard({ user, onLogout }) {
         ? await coeAPI.getPendingDocuments()
         : await coeAPI.getAllDocuments();
       console.log('CoE documents loaded:', response.data);
-      setDocuments(response.data || []);
+      setDocuments(response.data.content || response.data || []);
     } catch (err) {
       console.error('Failed to load documents:', err);
       setError(err.response?.data?.message || err.message || 'Failed to load documents. Backend might be missing.');
@@ -58,7 +61,7 @@ function CoEDashboard({ user, onLogout }) {
   const loadStats = async () => {
     try {
       const response = await coeAPI.getAllDocuments();
-      const allDocs = response.data;
+      const allDocs = response.data.content || response.data || [];
       // Assuming status names, adjust if backend differs
       const pending = allDocs.filter(d => d.status === 'FORWARDED_TO_COE').length;
       const approved = allDocs.filter(d => d.status === 'APPROVED_BY_COE').length;

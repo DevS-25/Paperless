@@ -11,6 +11,9 @@ import com.college.paperless.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,12 +51,14 @@ public class StudentController {
     }
 
     @GetMapping("/documents")
-    public ResponseEntity<List<DocumentDTO>> getMyDocuments(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Page<DocumentDTO>> getMyDocuments(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "100") int size) {
         User student = userDetailsService.loadUserEntityByEmail(userDetails.getUsername());
-        List<DocumentDTO> documents = documentService.getStudentDocuments(student)
-                .stream()
-                .map(DocumentDTO::fromEntity)
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DocumentDTO> documents = documentService.getStudentDocuments(student, pageable)
+                .map(DocumentDTO::fromEntity);
 
         return ResponseEntity.ok(documents);
     }

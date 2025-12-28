@@ -4,6 +4,8 @@ import com.college.paperless.entity.Document;
 import com.college.paperless.entity.User;
 import com.college.paperless.repository.DocumentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,13 +108,26 @@ public class DocumentService {
         return documentRepository.findByStudentOrderByUploadedAtDesc(student);
     }
 
+    public Page<Document> getStudentDocuments(User student, Pageable pageable) {
+        return documentRepository.findAllByStudentOrderByUploadedAtDesc(student, pageable);
+    }
+
     public List<Document> getMentorPendingDocuments(User mentor) {
         return documentRepository.findByMentorAndStatusOrderByForwardedToMentorAtDesc(
                 mentor, Document.DocumentStatus.FORWARDED_TO_MENTOR);
     }
 
+    public Page<Document> getMentorPendingDocuments(User mentor, Pageable pageable) {
+        return documentRepository.findAllByMentorAndStatusOrderByForwardedToMentorAtDesc(
+                mentor, Document.DocumentStatus.FORWARDED_TO_MENTOR, pageable);
+    }
+
     public List<Document> getMentorAllDocuments(User mentor) {
         return documentRepository.findByMentorOrderByForwardedToMentorAtDesc(mentor);
+    }
+
+    public Page<Document> getMentorAllDocuments(User mentor, Pageable pageable) {
+        return documentRepository.findAllByMentorOrderByForwardedToMentorAtDesc(mentor, pageable);
     }
 
     public Optional<Document> getDocumentById(Long id) {
@@ -124,12 +139,21 @@ public class DocumentService {
                 hod, Document.DocumentStatus.FORWARDED_TO_HOD);
     }
 
+    public Page<Document> getHodPendingDocuments(User hod, Pageable pageable) {
+        return documentRepository.findAllByHodAndStatusOrderByForwardedToHodAtDesc(
+                hod, Document.DocumentStatus.FORWARDED_TO_HOD, pageable);
+    }
+
     public List<Document> getDocumentsByHodAndStatus(User hod, Document.DocumentStatus status) {
         return documentRepository.findByHodAndStatusOrderByForwardedToHodAtDesc(hod, status);
     }
 
     public List<Document> getDocumentsByHod(User hod) {
         return documentRepository.findByHodOrderByForwardedToHodAtDesc(hod);
+    }
+
+    public Page<Document> getDocumentsByHod(User hod, Pageable pageable) {
+        return documentRepository.findAllByHodOrderByForwardedToHodAtDesc(hod, pageable);
     }
 
     @Transactional
@@ -186,8 +210,16 @@ public class DocumentService {
         return documentRepository.findByDeanAndStatusOrderByForwardedToDeanAtDesc(dean, status);
     }
 
+    public Page<Document> getDocumentsByDeanAndStatus(User dean, Document.DocumentStatus status, Pageable pageable) {
+        return documentRepository.findAllByDeanAndStatusOrderByForwardedToDeanAtDesc(dean, status, pageable);
+    }
+
     public List<Document> getDocumentsByDean(User dean) {
         return documentRepository.findByDeanOrderByForwardedToDeanAtDesc(dean);
+    }
+
+    public Page<Document> getDocumentsByDean(User dean, Pageable pageable) {
+        return documentRepository.findAllByDeanOrderByForwardedToDeanAtDesc(dean, pageable);
     }
 
     @Transactional
@@ -244,8 +276,16 @@ public class DocumentService {
         return documentRepository.findByDeanAcademicsAndStatusOrderByForwardedToDeanAcademicsAtDesc(deanAcademics, status);
     }
 
+    public Page<Document> getDocumentsByDeanAcademicsAndStatus(User deanAcademics, Document.DocumentStatus status, Pageable pageable) {
+        return documentRepository.findAllByDeanAcademicsAndStatusOrderByForwardedToDeanAcademicsAtDesc(deanAcademics, status, pageable);
+    }
+
     public List<Document> getDocumentsByDeanAcademics(User deanAcademics) {
         return documentRepository.findByDeanAcademicsOrderByForwardedToDeanAcademicsAtDesc(deanAcademics);
+    }
+
+    public Page<Document> getDocumentsByDeanAcademics(User deanAcademics, Pageable pageable) {
+        return documentRepository.findAllByDeanAcademicsOrderByForwardedToDeanAcademicsAtDesc(deanAcademics, pageable);
     }
 
     @Transactional
@@ -302,8 +342,16 @@ public class DocumentService {
         return documentRepository.findByRegistrarAndStatusOrderByForwardedToRegistrarAtDesc(registrar, status);
     }
 
+    public Page<Document> getDocumentsByRegistrarAndStatus(User registrar, Document.DocumentStatus status, Pageable pageable) {
+        return documentRepository.findAllByRegistrarAndStatusOrderByForwardedToRegistrarAtDesc(registrar, status, pageable);
+    }
+
     public List<Document> getDocumentsByRegistrar(User registrar) {
         return documentRepository.findByRegistrarOrderByForwardedToRegistrarAtDesc(registrar);
+    }
+
+    public Page<Document> getDocumentsByRegistrar(User registrar, Pageable pageable) {
+        return documentRepository.findAllByRegistrarOrderByForwardedToRegistrarAtDesc(registrar, pageable);
     }
 
     @Transactional
@@ -360,8 +408,16 @@ public class DocumentService {
         return documentRepository.findByCoeAndStatusOrderByForwardedToCoeAtDesc(coe, status);
     }
 
+    public Page<Document> getDocumentsByCoeAndStatus(User coe, Document.DocumentStatus status, Pageable pageable) {
+        return documentRepository.findAllByCoeAndStatusOrderByForwardedToCoeAtDesc(coe, status, pageable);
+    }
+
     public List<Document> getDocumentsByCoe(User coe) {
         return documentRepository.findByCoeOrderByForwardedToCoeAtDesc(coe);
+    }
+
+    public Page<Document> getDocumentsByCoe(User coe, Pageable pageable) {
+        return documentRepository.findAllByCoeOrderByForwardedToCoeAtDesc(coe, pageable);
     }
 
     @Transactional
@@ -416,8 +472,16 @@ public class DocumentService {
         return documentRepository.findByRndAndStatusOrderByForwardedToRndAtDesc(rnd, status);
     }
 
+    public Page<Document> getDocumentsByRndAndStatus(User rnd, Document.DocumentStatus status, Pageable pageable) {
+        return documentRepository.findAllByRndAndStatusOrderByForwardedToRndAtDesc(rnd, status, pageable);
+    }
+
     public List<Document> getDocumentsByRnd(User rnd) {
         return documentRepository.findByRndOrderByForwardedToRndAtDesc(rnd);
+    }
+
+    public Page<Document> getDocumentsByRnd(User rnd, Pageable pageable) {
+        return documentRepository.findAllByRndOrderByForwardedToRndAtDesc(rnd, pageable);
     }
 
     @Transactional
@@ -470,8 +534,16 @@ public class DocumentService {
         return documentRepository.findByIndustryRelationsAndStatusOrderByForwardedToIndustryRelationsAtDesc(industryRelations, status);
     }
 
+    public Page<Document> getDocumentsByIndustryRelationsAndStatus(User industryRelations, Document.DocumentStatus status, Pageable pageable) {
+        return documentRepository.findAllByIndustryRelationsAndStatusOrderByForwardedToIndustryRelationsAtDesc(industryRelations, status, pageable);
+    }
+
     public List<Document> getDocumentsByIndustryRelations(User industryRelations) {
         return documentRepository.findByIndustryRelationsOrderByForwardedToIndustryRelationsAtDesc(industryRelations);
+    }
+
+    public Page<Document> getDocumentsByIndustryRelations(User industryRelations, Pageable pageable) {
+        return documentRepository.findAllByIndustryRelationsOrderByForwardedToIndustryRelationsAtDesc(industryRelations, pageable);
     }
 
     @Transactional
@@ -600,8 +672,16 @@ public class DocumentService {
         return documentRepository.findByExamCellAndStatusOrderByForwardedToExamCellAtDesc(examCell, status);
     }
 
+    public Page<Document> getDocumentsByExamCellAndStatus(User examCell, Document.DocumentStatus status, Pageable pageable) {
+        return documentRepository.findAllByExamCellAndStatusOrderByForwardedToExamCellAtDesc(examCell, status, pageable);
+    }
+
     public List<Document> getDocumentsByExamCell(User examCell) {
         return documentRepository.findByExamCellOrderByForwardedToExamCellAtDesc(examCell);
+    }
+
+    public Page<Document> getDocumentsByExamCell(User examCell, Pageable pageable) {
+        return documentRepository.findAllByExamCellOrderByForwardedToExamCellAtDesc(examCell, pageable);
     }
 
     @Transactional

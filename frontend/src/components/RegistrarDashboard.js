@@ -25,8 +25,11 @@ function RegistrarDashboard({ user, onLogout }) {
 
   useEffect(() => {
     loadDocuments();
-    loadStats();
   }, [filter]);
+
+  useEffect(() => {
+    loadStats();
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -45,7 +48,7 @@ function RegistrarDashboard({ user, onLogout }) {
         ? await registrarAPI.getPendingDocuments()
         : await registrarAPI.getAllDocuments();
       console.log('Registrar documents loaded:', response.data);
-      setDocuments(response.data || []);
+      setDocuments(response.data.content || response.data || []);
     } catch (err) {
       console.error('Failed to load documents:', err);
       setError(err.response?.data?.message || err.message || 'Failed to load documents');
@@ -58,7 +61,7 @@ function RegistrarDashboard({ user, onLogout }) {
   const loadStats = async () => {
     try {
       const response = await registrarAPI.getAllDocuments();
-      const allDocs = response.data;
+      const allDocs = response.data.content || response.data || [];
       const pending = allDocs.filter(d => d.status === 'FORWARDED_TO_REGISTRAR').length;
       const approved = allDocs.filter(d => d.status === 'APPROVED_BY_REGISTRAR').length;
 

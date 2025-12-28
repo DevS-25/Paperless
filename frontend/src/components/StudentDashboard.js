@@ -34,7 +34,7 @@ function StudentDashboard({ user, onLogout }) {
     try {
       setLoading(true);
       const response = await studentAPI.getMyDocuments();
-      setDocuments(response.data);
+      setDocuments(response.data.content || response.data);
     } catch (err) {
       console.error('Failed to load documents:', err);
     } finally {
@@ -44,13 +44,10 @@ function StudentDashboard({ user, onLogout }) {
 
   const loadMentors = async () => {
     try {
-      setLoading(true);
       const response = await studentAPI.getMentors();
       setMentors(response.data);
     } catch (err) {
       console.error('Failed to load mentors:', err);
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -11,6 +11,9 @@ import com.college.paperless.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,23 +38,27 @@ public class DeanController {
     private final CustomUserDetailsService userDetailsService;
 
     @GetMapping("/pending-documents")
-    public ResponseEntity<List<DocumentDTO>> getPendingDocuments(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Page<DocumentDTO>> getPendingDocuments(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "100") int size) {
         User dean = userDetailsService.loadUserEntityByEmail(userDetails.getUsername());
-        List<DocumentDTO> documents = documentService.getDocumentsByDeanAndStatus(dean, Document.DocumentStatus.FORWARDED_TO_DEAN)
-                .stream()
-                .map(DocumentDTO::fromEntity)
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DocumentDTO> documents = documentService.getDocumentsByDeanAndStatus(dean, Document.DocumentStatus.FORWARDED_TO_DEAN, pageable)
+                .map(DocumentDTO::fromEntity);
 
         return ResponseEntity.ok(documents);
     }
 
     @GetMapping("/all-documents")
-    public ResponseEntity<List<DocumentDTO>> getAllDocuments(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Page<DocumentDTO>> getAllDocuments(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "100") int size) {
         User dean = userDetailsService.loadUserEntityByEmail(userDetails.getUsername());
-        List<DocumentDTO> documents = documentService.getDocumentsByDean(dean)
-                .stream()
-                .map(DocumentDTO::fromEntity)
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DocumentDTO> documents = documentService.getDocumentsByDean(dean, pageable)
+                .map(DocumentDTO::fromEntity);
 
         return ResponseEntity.ok(documents);
     }

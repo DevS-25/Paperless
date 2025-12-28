@@ -29,9 +29,14 @@ function DeanDashboard({ user, onLogout }) {
 
   useEffect(() => {
     loadDocuments();
-    loadStats();
-    loadDeans();
   }, [filter]);
+
+  useEffect(() => {
+    const loadAuxiliaryData = async () => {
+      await Promise.all([loadStats(), loadDeans()]);
+    };
+    loadAuxiliaryData();
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -57,7 +62,10 @@ function DeanDashboard({ user, onLogout }) {
         ? await deanAPI.getPendingDocuments()
         : await deanAPI.getAllDocuments();
       console.log('Dean documents loaded:', response.data);
-      setDocuments(response.data || []);
+      
+      // Handle paginated response
+      const docs = response.data.content || response.data || [];
+      setDocuments(docs);
     } catch (err) {
       console.error('Failed to load documents:', err);
       setError(err.response?.data?.message || err.message || 'Failed to load documents');
@@ -69,15 +77,18 @@ function DeanDashboard({ user, onLogout }) {
 
   const loadStats = async () => {
     try {
-      const response = await deanAPI.getAllDocuments();
-      const allDocs = response.data;
+      // Request a large page size for stats calculation to ensure accuracy
+      // Ideally, we should have a dedicated stats endpoint
+      const response = await deanAPI.getAllDocuments(0, 1000);
+      const allDocs = response.data.content || response.data || [];
+      
       const pending = allDocs.filter(d => d.status === 'FORWARDED_TO_DEAN').length;
       const approved = allDocs.filter(d => d.status === 'APPROVED_BY_DEAN' || d.status === 'FORWARDED_TO_DEAN_ACADEMICS' || d.status === 'APPROVED_BY_DEAN_ACADEMICS' || d.status === 'FORWARDED_TO_REGISTRAR' || d.status === 'APPROVED_BY_REGISTRAR').length;
 
       setStats({
         pending,
         approved,
-        total: allDocs.length
+        total: response.data.totalElements || allDocs.length
       });
     } catch (err) {
       console.error('Failed to load stats:', err);

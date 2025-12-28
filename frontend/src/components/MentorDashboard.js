@@ -30,9 +30,14 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
 
   useEffect(() => {
     loadDocuments();
-    loadHods();
-    loadStats();
   }, [filter, selectedDepartment]);
+
+  useEffect(() => {
+    const loadAuxiliaryData = async () => {
+      await Promise.all([loadHods(), loadStats()]);
+    };
+    loadAuxiliaryData();
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -68,7 +73,9 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
         ? await mentorAPI.getPendingDocuments()
         : await mentorAPI.getAllDocuments();
       console.log('Mentor documents loaded:', response.data);
-      setDocuments(response.data);
+      // Handle paginated response
+      const docs = response.data.content || response.data || [];
+      setDocuments(docs);
     } catch (err) {
       console.error('Failed to load documents:', err);
     } finally {
@@ -78,15 +85,17 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
 
   const loadStats = async () => {
     try {
-      const response = await mentorAPI.getAllDocuments();
-      const allDocs = response.data;
+      // Request a large page size for stats calculation
+      const response = await mentorAPI.getAllDocuments(0, 1000);
+      const allDocs = response.data.content || response.data || [];
+      
       const pending = allDocs.filter(d => d.status === 'FORWARDED_TO_MENTOR').length;
       const approved = allDocs.filter(d => d.status === 'APPROVED_BY_MENTOR' || d.status === 'FORWARDED_TO_HOD' || d.status === 'APPROVED_BY_HOD' || d.status === 'FORWARDED_TO_DEAN' || d.status === 'APPROVED_BY_DEAN' || d.status === 'FORWARDED_TO_DEAN_ACADEMICS' || d.status === 'APPROVED_BY_DEAN_ACADEMICS' || d.status === 'FORWARDED_TO_REGISTRAR' || d.status === 'APPROVED_BY_REGISTRAR').length;
 
       setStats({
         pending,
         approved,
-        total: allDocs.length
+        total: response.data.totalElements || allDocs.length
       });
     } catch (err) {
       console.error('Failed to load stats:', err);

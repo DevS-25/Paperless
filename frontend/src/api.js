@@ -46,7 +46,7 @@ export const studentAPI = {
       },
     });
   },
-  getMyDocuments: () => api.get('/student/documents'),
+  getMyDocuments: (page = 0, size = 100) => api.get(`/student/documents?page=${page}&size=${size}`),
   forwardToMentor: (documentId, mentorId) =>
     api.post(`/student/forward/${documentId}?mentorId=${mentorId}`),
   getMentors: () => api.get('/student/mentors'),
@@ -57,8 +57,8 @@ export const studentAPI = {
 
 // Mentor APIs
 export const mentorAPI = {
-  getPendingDocuments: () => api.get('/mentor/pending-documents'),
-  getAllDocuments: () => api.get('/mentor/all-documents'),
+  getPendingDocuments: (page = 0, size = 100) => api.get(`/mentor/pending-documents?page=${page}&size=${size}`),
+  getAllDocuments: (page = 0, size = 100) => api.get(`/mentor/all-documents?page=${page}&size=${size}`),
   approveDocument: (documentId) => api.post('/mentor/approve', { documentId }),
   rejectDocument: (documentId, rejectionReason) =>
     api.post('/mentor/reject', { documentId, rejectionReason }),
@@ -70,8 +70,8 @@ export const mentorAPI = {
 
 // HOD APIs
 export const hodAPI = {
-  getPendingDocuments: () => api.get('/hod/pending-documents'),
-  getAllDocuments: () => api.get('/hod/all-documents'),
+  getPendingDocuments: (page = 0, size = 100) => api.get(`/hod/pending-documents?page=${page}&size=${size}`),
+  getAllDocuments: (page = 0, size = 100) => api.get(`/hod/all-documents?page=${page}&size=${size}`),
   approveDocument: (documentId) => api.post('/hod/approve', { documentId }),
   rejectDocument: (documentId, rejectionReason) =>
     api.post('/hod/reject', { documentId, rejectionReason }),
@@ -83,8 +83,8 @@ export const hodAPI = {
 
 // Dean APIs
 export const deanAPI = {
-  getPendingDocuments: () => api.get('/dean/pending-documents'),
-  getAllDocuments: () => api.get('/dean/all-documents'),
+  getPendingDocuments: (page = 0, size = 100) => api.get(`/dean/pending-documents?page=${page}&size=${size}`),
+  getAllDocuments: (page = 0, size = 100) => api.get(`/dean/all-documents?page=${page}&size=${size}`),
   approveDocument: (documentId) => api.post('/dean/approve', { documentId }),
   rejectDocument: (documentId, rejectionReason) =>
     api.post('/dean/reject', { documentId, rejectionReason }),
@@ -104,8 +104,8 @@ export const deanAPI = {
 
 // Dean Academics APIs
 export const deanAcademicsAPI = {
-  getPendingDocuments: () => api.get('/dean-academics/pending-documents'),
-  getAllDocuments: () => api.get('/dean-academics/all-documents'),
+  getPendingDocuments: (page = 0, size = 100) => api.get(`/dean-academics/pending-documents?page=${page}&size=${size}`),
+  getAllDocuments: (page = 0, size = 100) => api.get(`/dean-academics/all-documents?page=${page}&size=${size}`),
   approveDocument: (documentId) => api.post('/dean-academics/approve', { documentId }),
   rejectDocument: (documentId, rejectionReason) =>
     api.post('/dean-academics/reject', { documentId, rejectionReason }),
@@ -117,8 +117,8 @@ export const deanAcademicsAPI = {
 
 // Registrar APIs
 export const registrarAPI = {
-  getPendingDocuments: () => api.get('/registrar/pending-documents'),
-  getAllDocuments: () => api.get('/registrar/all-documents'),
+  getPendingDocuments: (page = 0, size = 100) => api.get(`/registrar/pending-documents?page=${page}&size=${size}`),
+  getAllDocuments: (page = 0, size = 100) => api.get(`/registrar/all-documents?page=${page}&size=${size}`),
   approveDocument: (documentId) => api.post('/registrar/approve', { documentId }),
   rejectDocument: (documentId, rejectionReason) =>
     api.post('/registrar/reject', { documentId, rejectionReason }),
@@ -128,8 +128,8 @@ export const registrarAPI = {
 
 // CoE APIs
 export const coeAPI = {
-  getPendingDocuments: () => api.get('/coe/pending-documents'),
-  getAllDocuments: () => api.get('/coe/all-documents'),
+  getPendingDocuments: (page = 0, size = 100) => api.get(`/coe/pending-documents?page=${page}&size=${size}`),
+  getAllDocuments: (page = 0, size = 100) => api.get(`/coe/all-documents?page=${page}&size=${size}`),
   approveDocument: (documentId) => api.post('/coe/approve', { documentId }),
   rejectDocument: (documentId, rejectionReason) =>
     api.post('/coe/reject', { documentId, rejectionReason }),
@@ -139,8 +139,8 @@ export const coeAPI = {
 
 // R&D APIs
 export const rndAPI = {
-  getPendingDocuments: () => api.get('/rnd/pending-documents'),
-  getAllDocuments: () => api.get('/rnd/all-documents'),
+  getPendingDocuments: (page = 0, size = 100) => api.get(`/rnd/pending-documents?page=${page}&size=${size}`),
+  getAllDocuments: (page = 0, size = 100) => api.get(`/rnd/all-documents?page=${page}&size=${size}`),
   approveDocument: (documentId) => api.post('/rnd/approve', { documentId }),
   rejectDocument: (documentId, rejectionReason) =>
     api.post('/rnd/reject', { documentId, rejectionReason }),
@@ -150,8 +150,8 @@ export const rndAPI = {
 
 // Industry Relations APIs
 export const industryRelationsAPI = {
-  getPendingDocuments: () => api.get('/industry-relations/pending-documents'),
-  getAllDocuments: () => api.get('/industry-relations/all-documents'),
+  getPendingDocuments: (page = 0, size = 100) => api.get(`/industry-relations/pending-documents?page=${page}&size=${size}`),
+  getAllDocuments: (page = 0, size = 100) => api.get(`/industry-relations/all-documents?page=${page}&size=${size}`),
   approveDocument: (documentId) => api.post('/industry-relations/approve', { documentId }),
   rejectDocument: (documentId, rejectionReason) =>
     api.post('/industry-relations/reject', { documentId, rejectionReason }),
@@ -169,8 +169,8 @@ export const industryRelationsAPI = {
 
 // Exam Cell APIs
 export const examCellAPI = {
-  getPendingDocuments: () => api.get('/exam-cell/pending-documents'),
-  getAllDocuments: () => api.get('/exam-cell/all-documents'),
+  getPendingDocuments: (page = 0, size = 100) => api.get(`/exam-cell/pending-documents?page=${page}&size=${size}`),
+  getAllDocuments: (page = 0, size = 100) => api.get(`/exam-cell/all-documents?page=${page}&size=${size}`),
   approveDocument: (documentId) => api.post('/exam-cell/approve', { documentId }),
   rejectDocument: (documentId, rejectionReason) =>
     api.post('/exam-cell/reject', { documentId, rejectionReason }),
