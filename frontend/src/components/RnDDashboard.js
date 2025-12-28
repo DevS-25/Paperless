@@ -294,7 +294,7 @@ function RnDDashboard({ user, onLogout }) {
                         <p style={{ margin: 0 }}>
                           <strong>👨‍🏫 Forwarded By Dean</strong> | {formatName(doc.deanName)}
                           {doc.forwardedToRndAt && (
-                            <span className="text-light" style={{ marginLeft: '375px' }}>
+                            <span className="text-light forwarded-date">
                               <strong>Forwarded on:</strong> {formatDate(doc.forwardedToRndAt)}
                             </span>
                           )}
@@ -396,7 +396,6 @@ function RnDDashboard({ user, onLogout }) {
         <div className="loading-overlay">
           <div className="loading-spinner">
             <div className="spinner"></div>
-            <p>Processing...</p>
           </div>
         </div>
       )}

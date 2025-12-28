@@ -159,6 +159,51 @@
   }
 }
 
+@media (max-width: 768px) {
+  .admin-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .admin-header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+  }
+
+  .admin-nav {
+    position: static;
+    display: flex;
+    overflow-x: auto;
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .nav-item {
+    flex: 0 0 auto;
+    width: auto;
+    margin-bottom: 0;
+    white-space: nowrap;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Stats Grid */
 .stats-grid {
   display: grid;

@@ -395,7 +395,6 @@ function StudentDashboard({ user, onLogout }) {
         <div className="loading-overlay">
           <div className="loading-spinner">
             <div className="spinner"></div>
-            <p>Processing...</p>
           </div>
         </div>
       )}

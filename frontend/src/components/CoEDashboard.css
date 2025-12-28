@@ -149,6 +149,53 @@
   .stats-section {
     grid-template-columns: 1fr;
   }
+
+  /* Command 1: Mobile layout fix */
+  .document-main {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  /* Command 2: Buttons mobile fix */
+  .document-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.75rem !important;
+  }
+
+  .document-actions .btn {
+    width: 100% !important;
+    padding: 12px !important; /* Increase touch friendliness */
+  }
+
+  /* Command 3: Student info grid mobile tuning */
+  .info-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .info-label {
+    font-size: 11px !important;
+  }
+
+  .info-value {
+    font-size: 13px !important;
+    word-break: break-word !important;
+  }
+
+  /* Command 4: Header & overflow polish */
+  .document-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+  
+  .document-header h3 {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+    white-space: normal !important;
+  }
 }
 
 @media (min-width: 992px) {
@@ -189,11 +236,6 @@
 }
 
 .loading-spinner {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -202,22 +244,67 @@
 
 .loading-spinner p {
   margin: 0;
-  color: var(--text-main);
+  color: white;
   font-weight: 600;
   font-size: 1.1rem;
 }
 
 .spinner {
   width: 40px;
-  height: 50px;
-  background-color: var(--primary-color);
-  animation: flip 1.2s infinite ease-in-out;
-  border: none;
-  border-radius: 2px;
+  height: 20px;
+  --c: no-repeat radial-gradient(farthest-side, #fff 93%, #0000);
+  background:
+    var(--c) 0 0,
+    var(--c) 50% 0;
+  background-size: 8px 8px;
+  position: relative;
+  clip-path: inset(-200% -100% 0 0);
+  animation: l6-0 1.5s linear infinite;
 }
 
-@keyframes flip {
-  0% { transform: perspective(120px) rotateX(0deg) rotateY(0deg); }
-  50% { transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); }
-  100% { transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); }
+.spinner:before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 12px;
+  background: #fff;
+  left: -16px;
+  top: 0;
+  animation: 
+    l6-1 1.5s linear infinite,
+    l6-2 0.5s cubic-bezier(0, 200, .8, 200) infinite;
+}
+
+.spinner:after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: l6-3 1.5s linear infinite;
+}
+
+@keyframes l6-0 {
+  0%, 30%  { background-position: 0 0, 50% 0; }
+  33%      { background-position: 0 100%, 50% 0; }
+  41%, 63% { background-position: 0 0, 50% 0; }
+  66%      { background-position: 0 0, 50% 100%; }
+  74%, 100% { background-position: 0 0, 50% 0; }
+}
+
+@keyframes l6-1 {
+  90%  { transform: translateY(0); }
+  95%  { transform: translateY(15px); }
+  100% { transform: translateY(15px); left: calc(100% - 8px); }
+}
+
+@keyframes l6-2 {
+  100% { top: -0.1px; }
+}
+
+@keyframes l6-3 {
+  0%, 80%, 100% { transform: translate(0); }
+  90%          { transform: translate(26px); }
 }

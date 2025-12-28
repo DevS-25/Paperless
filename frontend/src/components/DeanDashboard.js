@@ -19,6 +19,7 @@ function DeanDashboard({ user, onLogout }) {
   const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState(user.department || 'CSE');
   const [forwardDepartments, setForwardDepartments] = useState({});
+  const [mobileMenuOpen, setMobileMenuOpen] = useState({});
   const [stats, setStats] = useState({
     pending: 0,
     approved: 0,
@@ -39,6 +40,13 @@ function DeanDashboard({ user, onLogout }) {
       }
     };
   }, [previewUrl]);
+
+  const toggleMobileMenu = (docId) => {
+    setMobileMenuOpen(prev => ({
+      ...prev,
+      [docId]: !prev[docId]
+    }));
+  };
 
   const loadDocuments = async () => {
     try {
@@ -430,7 +438,7 @@ function DeanDashboard({ user, onLogout }) {
                         <p style={{ margin: 0 }}>
                           <strong>👨‍🏫 Forwarded By HOD</strong> | {formatName(doc.hodName)}
                           {doc.forwardedToDeanAt && (
-                            <span className="text-light" style={{ marginLeft: '375px' }}>
+                            <span className="text-light forwarded-date">
                               <strong>Forwarded on:</strong> {formatDate(doc.forwardedToDeanAt)}
                             </span>
                           )}
@@ -468,81 +476,84 @@ function DeanDashboard({ user, onLogout }) {
 
                     {/* Actions for Pending Documents */}
                     {doc.status === 'FORWARDED_TO_DEAN' && (
-                      <div className="document-actions" style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', flexWrap: 'wrap' }}>
-                        <div className="dept-selection-group" style={{ minWidth: '150px' }}>
-                          <label htmlFor={`dept-select-${doc.id}`} style={{ display: 'block', marginBottom: '5px', fontSize: '0.8rem' }}>Select Dean:</label>
-                          <select
-                            id={`dept-select-${doc.id}`}
-                            className="form-control"
-                            value={forwardDepartments[doc.id] || ''}
-                            onChange={(e) => handleForwardDepartmentChange(doc.id, e.target.value)}
+                      <div className={`document-actions ${mobileMenuOpen[doc.id] ? 'mobile-open' : ''}`}>
+                        <div className="primary-actions">
+                          <button
+                            className="btn btn-success btn-approve"
+                            onClick={() => handleApprove(doc.id)}
                             disabled={loading}
-                            style={{ padding: '0.25rem', fontSize: '0.8rem', height: 'auto' }}
                           >
-                            <option value="">None</option>
-                            {departments
-                              .filter(dept => dept !== user.department)
-                              .map(dept => (
-                                <option key={dept} value={dept}>{dept}</option>
-                              ))}
-                          </select>
+                            ✓ Approve
+                          </button>
+                          <button
+                            className="btn btn-danger btn-reject"
+                            onClick={() => setSelectedDoc(doc.id)}
+                            disabled={loading}
+                          >
+                            ✗ Reject
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-more-actions"
+                            onClick={() => toggleMobileMenu(doc.id)}
+                          >
+                            {mobileMenuOpen[doc.id] ? '▲ Less Actions' : '▼ More Actions'}
+                          </button>
                         </div>
-                        <button
-                          className="btn btn-warning"
-                          onClick={() => handleForwardToDean(doc.id)}
-                          disabled={loading || !forwardDepartments[doc.id]}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          → Forward to Dean
-                        </button>
-                        <button
-                          className="btn btn-warning"
-                          onClick={() => handleForwardToDeanAcademics(doc.id)}
-                          disabled={loading}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          → Forward to Dean Academics
-                        </button>
-                        <button
-                          className="btn btn-warning"
-                          onClick={() => handleForwardToIndustryRelations(doc.id)}
-                          disabled={loading}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          → Forward to Industry Relations
-                        </button>
-                        <button
-                          className="btn btn-warning"
-                          onClick={() => handleForwardToRnd(doc.id)}
-                          disabled={loading}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          → Forward to R&D
-                        </button>
-                        <button
-                          className="btn btn-warning"
-                          onClick={() => handleForwardToCoe(doc.id)}
-                          disabled={loading}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          → Forward to CoE
-                        </button>
-                        <button
-                          className="btn btn-success"
-                          onClick={() => handleApprove(doc.id)}
-                          disabled={loading}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          ✓ Approve
-                        </button>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => setSelectedDoc(doc.id)}
-                          disabled={loading}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          ✗ Reject
-                        </button>
+
+                        <div className="secondary-actions-group">
+                          <div className="dept-selection-group">
+                            <select
+                              id={`dept-select-${doc.id}`}
+                              className="form-control"
+                              value={forwardDepartments[doc.id] || ''}
+                              onChange={(e) => handleForwardDepartmentChange(doc.id, e.target.value)}
+                              disabled={loading}
+                              style={{ padding: '0.25rem', fontSize: '0.8rem', height: 'auto' }}
+                            >
+                              <option value="">Select Dean</option>
+                              {departments
+                                .filter(dept => dept !== user.department)
+                                .map(dept => (
+                                  <option key={dept} value={dept}>{dept}</option>
+                                ))}
+                            </select>
+                          </div>
+                          <button
+                            className="btn btn-warning btn-forward"
+                            onClick={() => handleForwardToDean(doc.id)}
+                            disabled={loading || !forwardDepartments[doc.id]}
+                          >
+                            → Forward to Dean
+                          </button>
+                          <button
+                            className="btn btn-warning btn-forward"
+                            onClick={() => handleForwardToDeanAcademics(doc.id)}
+                            disabled={loading}
+                          >
+                            → Forward to Dean Academics
+                          </button>
+                          <button
+                            className="btn btn-warning btn-forward"
+                            onClick={() => handleForwardToIndustryRelations(doc.id)}
+                            disabled={loading}
+                          >
+                            → Forward to Industry Relations
+                          </button>
+                          <button
+                            className="btn btn-warning btn-forward"
+                            onClick={() => handleForwardToRnd(doc.id)}
+                            disabled={loading}
+                          >
+                            → Forward to R&D
+                          </button>
+                          <button
+                            className="btn btn-warning btn-forward"
+                            onClick={() => handleForwardToCoe(doc.id)}
+                            disabled={loading}
+                          >
+                            → Forward to CoE
+                          </button>
+                        </div>
                       </div>
                     )}
 
@@ -596,7 +607,6 @@ function DeanDashboard({ user, onLogout }) {
         <div className="loading-overlay">
           <div className="loading-spinner">
             <div className="spinner"></div>
-            <p>Processing...</p>
           </div>
         </div>
       )}

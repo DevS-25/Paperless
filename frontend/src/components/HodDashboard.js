@@ -20,6 +20,7 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
   const [deans, setDeans] = useState([]);
   const [selectedDeanIds, setSelectedDeanIds] = useState({});
   const [forwardDepartments, setForwardDepartments] = useState({});
+  const [mobileMenuOpen, setMobileMenuOpen] = useState({});
   const [stats, setStats] = useState({
     pending: 0,
     approved: 0,
@@ -39,6 +40,13 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
       }
     };
   }, [previewUrl]);
+
+  const toggleMobileMenu = (docId) => {
+    setMobileMenuOpen(prev => ({
+      ...prev,
+      [docId]: !prev[docId]
+    }));
+  };
 
 
   const loadDeans = async () => {
@@ -291,7 +299,7 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
             {user.roles && user.roles.includes('MENTOR') && (
               <button
                 onClick={() => onRoleSwitch('MENTOR')}
-                className="btn btn-secondary"
+                className="btn btn-secondary btn-switch-role"
                 style={{ marginRight: '10px' }}
               >
                 Switch to Mentor
@@ -299,7 +307,7 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
             )}
             <button
               onClick={() => setIsSignatureModalOpen(true)}
-              className="btn btn-secondary"
+              className="btn btn-secondary btn-upload-sig"
               style={{ marginRight: '10px' }}
             >
               Upload Signature
@@ -396,7 +404,7 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
                         <p style={{ margin: 0 }}>
                           <strong>👨‍🏫 Forwarded By Mentor</strong> | {formatName(doc.mentorName)}
                           {doc.forwardedToHodAt && (
-                            <span className="text-light" style={{ marginLeft: '375px' }}>
+                            <span className="text-light forwarded-date">
                               <strong>Forwarded on:</strong> {formatDate(doc.forwardedToHodAt)}
                             </span>
                           )}
@@ -434,8 +442,8 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
 
                     {/* Actions for Pending Documents */}
                     {doc.status === 'FORWARDED_TO_HOD' && (
-                      <div className="document-actions" style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', flexWrap: 'wrap' }}>
-                        <div className="dean-selection-group" style={{ display: 'flex', gap: '10px', flex: '1 1 auto' }}>
+                      <div className={`document-actions ${mobileMenuOpen[doc.id] ? 'mobile-open' : ''}`}>
+                        <div className="dean-selection-group">
                           <div style={{ flex: 1, minWidth: '120px' }}>
                             <label htmlFor={`dept-select-${doc.id}`} style={{ display: 'block', marginBottom: '5px', fontSize: '0.8rem' }}>Forward to Dept:</label>
                             <select
@@ -472,30 +480,33 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
                             </select>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '5px' }}>
+                        <div className="action-buttons-group">
                           <button
-                            className="btn btn-success"
+                            className="btn btn-success btn-nowrap"
                             onClick={() => handleApprove(doc.id)}
                             disabled={loading}
-                            style={{ whiteSpace: 'nowrap' }}
                           >
                             ✓ Final Approval
                           </button>
                           <button
-                            className="btn btn-warning"
+                            className="btn btn-warning btn-nowrap btn-forward"
                             onClick={() => handleForwardToDean(doc.id)}
                             disabled={loading || !selectedDeanIds[doc.id]}
-                            style={{ whiteSpace: 'nowrap' }}
                           >
                             → Forward to Dean
                           </button>
                           <button
-                            className="btn btn-danger"
+                            className="btn btn-danger btn-nowrap"
                             onClick={() => setSelectedDoc(doc.id)}
                             disabled={loading}
-                            style={{ whiteSpace: 'nowrap' }}
                           >
                             ✗ Reject
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-more-actions"
+                            onClick={() => toggleMobileMenu(doc.id)}
+                          >
+                            {mobileMenuOpen[doc.id] ? '▲ Less Actions' : '▼ More Actions'}
                           </button>
                         </div>
                       </div>
@@ -551,7 +562,6 @@ function HodDashboard({ user, onLogout, onRoleSwitch }) {
         <div className="loading-overlay">
           <div className="loading-spinner">
             <div className="spinner"></div>
-            <p>Processing...</p>
           </div>
         </div>
       )}

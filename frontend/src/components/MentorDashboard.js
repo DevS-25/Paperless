@@ -21,6 +21,7 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
   const [selectedHodIds, setSelectedHodIds] = useState({});
   const [forwardDepartments, setForwardDepartments] = useState({});
   const [selectedDepartment, setSelectedDepartment] = useState(user.department || 'CSE');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState({});
   const [stats, setStats] = useState({
     pending: 0,
     approved: 0,
@@ -40,6 +41,13 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
       }
     };
   }, [previewUrl]);
+
+  const toggleMobileMenu = (docId) => {
+    setMobileMenuOpen(prev => ({
+      ...prev,
+      [docId]: !prev[docId]
+    }));
+  };
 
   const loadHods = async () => {
     try {
@@ -267,7 +275,7 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
             {user.roles && user.roles.includes('HOD') && (
               <button
                 onClick={() => onRoleSwitch('HOD')}
-                className="btn btn-secondary"
+                className="btn btn-secondary btn-switch-role"
                 style={{ marginRight: '10px' }}
               >
                 Switch to HOD
@@ -275,7 +283,7 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
             )}
             <button
               onClick={() => setIsSignatureModalOpen(true)}
-              className="btn btn-secondary"
+              className="btn btn-secondary btn-upload-sig"
               style={{ marginRight: '10px' }}
             >
               Upload Signature
@@ -386,8 +394,8 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
 
                     {/* Actions for Pending Documents */}
                     {doc.status === 'FORWARDED_TO_MENTOR' && (
-                      <div className="document-actions" style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', flexWrap: 'wrap' }}>
-                        <div className="hod-selection-group" style={{ display: 'flex', gap: '10px', flex: '1 1 auto' }}>
+                      <div className={`document-actions ${mobileMenuOpen[doc.id] ? 'mobile-open' : ''}`}>
+                        <div className="hod-selection-group">
                           <div style={{ flex: 1, minWidth: '120px' }}>
                             <label htmlFor={`dept-select-${doc.id}`} style={{ display: 'block', marginBottom: '5px', fontSize: '0.8rem' }}>Forward to Dept:</label>
                             <select
@@ -424,30 +432,33 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
                             </select>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '5px' }}>
+                        <div className="action-buttons-group">
                           <button
-                            className="btn btn-success"
+                            className="btn btn-success btn-nowrap"
                             onClick={() => handleApprove(doc.id)}
                             disabled={loading}
-                            style={{ whiteSpace: 'nowrap' }}
                           >
                             ✓ Approve
                           </button>
                           <button
-                            className="btn btn-warning"
+                            className="btn btn-warning btn-nowrap btn-forward"
                             onClick={() => handleForwardToHod(doc.id)}
                             disabled={loading || !selectedHodIds[doc.id]}
-                            style={{ whiteSpace: 'nowrap' }}
                           >
                             → Forward to HOD
                           </button>
                           <button
-                            className="btn btn-danger"
+                            className="btn btn-danger btn-nowrap"
                             onClick={() => setSelectedDoc(doc.id)}
                             disabled={loading}
-                            style={{ whiteSpace: 'nowrap' }}
                           >
                             ✗ Reject
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-more-actions"
+                            onClick={() => toggleMobileMenu(doc.id)}
+                          >
+                            {mobileMenuOpen[doc.id] ? '▲ Less Actions' : '▼ More Actions'}
                           </button>
                         </div>
                       </div>
@@ -502,7 +513,6 @@ function MentorDashboard({ user, onLogout, onRoleSwitch }) {
           <div className="loading-overlay">
             <div className="loading-spinner">
               <div className="spinner"></div>
-              <p>Processing...</p>
             </div>
           </div>
         )}

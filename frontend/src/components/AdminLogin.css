@@ -1,54 +1,101 @@
 .admin-login-container {
-  min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: var(--bg-body);
-  padding: 2rem;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #111827;
+  padding: 1rem;
 }
 
 .admin-login-card {
-  background: var(--bg-card);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
-  max-width: 400px;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   width: 100%;
+  max-width: 24rem;
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  animation: slideUp 0.5s ease;
 }
 
 .admin-login-header {
-  background: linear-gradient(135deg, var(--accent-color) 0%, #16213e 100%);
-  color: white;
-  padding: 2rem;
+  background-color: #1f2937;
+  padding: 1.5rem;
   text-align: center;
+  color: white;
+  border-bottom: 1px solid #374151;
 }
 
 .admin-login-header h1 {
-  font-size: 1.75rem;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
 }
 
 .admin-login-header p {
-  font-size: 0.9rem;
-  opacity: 0.9;
+  color: #9ca3af;
+  font-size: 0.875rem;
 }
 
 .admin-login-body {
   padding: 2rem;
 }
 
-.admin-login-footer {
-  padding: 1rem;
-  text-align: center;
-  background: var(--bg-body);
-  border-top: 1px solid var(--border-color);
+.form-group {
+  margin-bottom: 1.5rem;
 }
 
-.btn-block {
+.form-group label {
   display: block;
-  width: 100%;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
 }
 
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.alert {
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+button[type="submit"] {
+  width: 100%;
+  background-color: #1f2937;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button[type="submit"]:hover {
+  background-color: #111827;
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
